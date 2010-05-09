@@ -1,14 +1,16 @@
 dojo.provide("awfuler.awfuler");
 /*=====
 awfuler.awfuler = {
-// summary: A roll-up for common SomethingAwfuler Methods
+// summary: 
+// 	A roll-up for common SomethingAwfuler Methods
 // description:
 //	A roll-up for common SomethingAwfuler Methods
 //	
-// example:
-// | <script type="text/javascript" src="js/dojo/awfuler/awfuler.js"></script>
-//
 };
 =====*/
 dojo.require("dojo.parser");
-dojo.require("awfuler._base");
+dojo.require('awfuler.util');
+dojo.require('awfuler.resources');
+dojo.require('awfuler.user');
+dojo.require('awfuler.thread');
+dojo.require('awfuler.post');
