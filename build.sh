@@ -78,8 +78,10 @@ if [ -d "${RELEASE_DIR}" ]; then
 	log "Removing old release directory ${RELEASE_DIR}"
 	rm -Rf "${RELEASE_DIR}"
 fi
-
 mkdir "${RELEASE_DIR}"
+
+log "Removing temp files ending in ~"
+find . -name '*~' -exec rm {} /;
 
 ## STEP 3 - Gather Dependencies
 log "Gathering dependencies..."
