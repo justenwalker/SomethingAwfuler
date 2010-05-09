@@ -41,7 +41,7 @@ banlookup: {
 			img:  document.createElement('img'),
 			text: document.createTextNode('View Post'),
 			bold: document.createElement('b')
-		}
+		};
 		// Bold Text
 		button.bold.appendChild(button.text);
 		dojo.style(button.bold,{'paddingLeft':'1em'});
@@ -55,7 +55,7 @@ banlookup: {
 			a._goToBan(userid);
 		},false);
 		button.link.addEventListener('mouseover',function() {
-			a._setLinkTitle(button.link,userid)
+			a._setLinkTitle(button.link,userid);
 		},false);
 		dojo.style(button.link,{
 			"textDecoration":'none',
