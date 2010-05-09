@@ -1,10 +1,9 @@
+
 #ignore logs
 logs/*
 #ignore vim/backup files
 *.swp
 *~
-#ignore release dir
-release
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files build by Visual Studio
