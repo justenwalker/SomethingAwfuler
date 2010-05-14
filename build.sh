@@ -38,8 +38,7 @@ INCLUDES_JS_PATH="${SRC_DIR}/${INCLUDES_JS_NAME}"
 init_logfile () {
 	TEE_LOGS=cat
 	if [ ! -d ${LOG_DIR} ]; then
-		LOGGING_ENABLED=N
-		log "WARNING : Cannot write logs to ${LOG_DIR}, does not exist!"
+		mkdir -p ${LOG_DIR}
 	fi
 	if [ "${LOGGING_ENABLED}" != "N" ]; then
 		LOG=${THISDIR}/${LOG_DIR}/buildlog_${DATE}.log
