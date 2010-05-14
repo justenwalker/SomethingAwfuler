@@ -1,4 +1,5 @@
 dojo.provide("awfuler.thread.info");
+dojo.require("awfuler.util.meta");
 
 dojo.mixin(awfuler.thread,
 {info: {
@@ -6,6 +7,7 @@ dojo.mixin(awfuler.thread,
 	threadId: 0,
 	perPage: 0,
 	pageNum: 0,
+	maxPages: 0,
 	title: "",
 	_loadInfo: function()
 	{
@@ -14,6 +16,7 @@ dojo.mixin(awfuler.thread,
 		a.perPage = a.getPerPage();
 		a.pageNum = a.getPage();
 		a.title = a.getTitle();
+		a.maxPages = getMaxPages();
 	},
 	isThread: function()
 	{
@@ -27,6 +30,10 @@ dojo.mixin(awfuler.thread,
 			a.isInThread = ( window.location.href.search(/showthread.php/) > -1 );
 		}
 		return a.isInThread;
+	},
+	getThreadLink: function(threadid,pagenumber){
+		return 'showthread.php?threadid=' + threadid + '&pagenumber=' + pagenumber;
+	
 	},
 	getId: function()
 	{
@@ -43,13 +50,7 @@ dojo.mixin(awfuler.thread,
 		}
 		return 0;
 	},
-	getPage: function()
-	{
-		// summary:
-		//	Gets the current page number
-		// returns:
-		// 	If the user is currently in a thread, the page number will be returned.
-		// 	If the user is not reading a thread, 0 will be returned.
+	_getPageFromURL: function () {
 		var a = awfuler.thread.info;
 		if( a.isThread() )
 		{
@@ -59,6 +60,33 @@ dojo.mixin(awfuler.thread,
 			}
 			return 1; // Default is page 1
 		}
+		return 0;
+	},
+	_getPageFromAnchor: function() {
+		var a = awfuler.thread.info;
+		var q = dojo.query('span[class="curpage"]');
+		if( q.length > 0 ) {
+			return parseInt(q[0].childNodes[0].textContent);
+		}
+		return 0;
+	},
+	_getPageFromMeta: function() {
+		var val = awfuler.util.meta.getAwfulValue('pagenumber');
+		if( val == null ) return 0;
+		return parseInt(val);
+	},
+	getPage: function()
+	{
+		// summary:
+		//	Gets the current page number
+		// returns:
+		// 	If the user is currently in a thread, the page number will be returned.
+		// 	If the user is not reading a thread, 0 will be returned.
+		var a = awfuler.thread.info;
+		var r = 0;
+		r = a._getPageFromMeta();   if ( r > 0 ) return r;
+		r = a._getPageFromURL();    if ( r > 0 ) return r;
+		r = a._getPageFromAnchor(); if ( r > 0 ) return r;
 		return 0;
 	},
 	getPerPage: function()
@@ -78,6 +106,30 @@ dojo.mixin(awfuler.thread,
 			return 40; // Default is 40 (?)
 		}
 		return 0;
+	},
+	getMaxPages: function() {
+		var a = awfuler.thread.info;
+		var pages = dojo.query('a[class="pagenumber"]');
+		for( var i = pages.length-1; i >= 0 ; --i )
+		{
+			var link = pages[i];
+			var m = link.href.match(/pagenumber=([0-9]*)/);
+			var lastpage = 0;
+			var nextpage = 0;
+			
+			if( m ) page = m[1];
+			
+			if( link.title == "last page" ) {
+				lastpage = page;
+			}
+			if( link.title.search(/next/) >= 0 )
+			{
+				nextpage = page;
+			}
+		}
+		if( lastpage > 0 ) return lastpage; // Last = Last
+		if( nextpage > 0 ) return nextpage; // No Last, so Next = Last
+		return a.getPage(); // Must be the current page?
 	},
 	getTitle: function()
 	{
