@@ -9,6 +9,7 @@ dojo.mixin(awfuler.thread,
 	pageNum: 0,
 	maxPages: 0,
 	title: "",
+	_threadDiv: null,
 	_loadInfo: function()
 	{
 		var a = awfuler.thread.info;
@@ -16,7 +17,8 @@ dojo.mixin(awfuler.thread,
 		a.perPage = a.getPerPage();
 		a.pageNum = a.getPage();
 		a.title = a.getTitle();
-		a.maxPages = getMaxPages();
+		a.maxPages = a.getMaxPages();
+		a._threadDiv = document.getElementById('thread');
 	},
 	isThread: function()
 	{
@@ -121,10 +123,12 @@ dojo.mixin(awfuler.thread,
 			
 			if( link.title == "last page" ) {
 				lastpage = page;
+				break;
 			}
 			if( link.title.search(/next/) >= 0 )
 			{
 				nextpage = page;
+				break;
 			}
 		}
 		if( lastpage > 0 ) return lastpage; // Last = Last
