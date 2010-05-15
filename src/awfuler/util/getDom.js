@@ -22,9 +22,12 @@ dojo.mixin(awfuler.util,
 		var text = responseText.replace(/<script>/ig, '<script >');
 		text = text.replace(/<script\ .*?>.*?<\/script>/ig,'');
 
-		var elm = document.createElement('div');
-		elm.innerHTML = text;
-
+		var elm = document.createElement('iframe');
+		elm.setAttribute('src','about:blank');
+		elm.setAttribute('style','display:none');
+		document.body.appendChild(elm);
+		elm.contentDocument.documentElement.innerHTML = text;
+		
 		return elm;
 	},
 	getDomUnsafe: function(/*String*/responseText) {
@@ -42,8 +45,11 @@ dojo.mixin(awfuler.util,
 		// responseText:
 		// 		An HTML String, usually returned from an xhr* request	
 
-		var elm = document.createElement('div');
-		elm.innerHTML = text;
+		var elm = document.createElement('iframe');
+		elm.setAttribute('src','about:blank');
+		elm.setAttribute('style','display:none');
+		document.body.appendChild(elm);
+		elm.contentDocument.documentElement.innerHTML = text;
 
 		return elm;
 	}

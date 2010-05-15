@@ -115,7 +115,7 @@ banlookup: {
 
 		var a = awfuler.post.banlookup;
 		var dom = awfuler.util.getDom(data);
-		var rows = dojo.query('table.standard > tbody > tr',dom);
+		var rows = dojo.query('table.standard > tbody > tr',dom.contentDocument.documentElement);
 		
 		var columns  = dojo.query('td',rows[1]);
 
