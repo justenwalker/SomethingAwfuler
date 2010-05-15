@@ -3,10 +3,10 @@ dojo.provide('awfuler.util.meta');
 dojo.mixin(awfuler.util,{
 meta : {
 	setAwfulValue: function(key, value) {
-		awfuler.util.meta.setValue('__awfulerKey_' + key);
+		awfuler.util.meta.setValue('__awfulerKey_' + key, value);
 	},
-	getAwfulValue: function(key, value) {
-		awfuler.util.meta.getValue('__awfulerKey_' + key);
+	getAwfulValue: function(key) {
+		return awfuler.util.meta.getValue('__awfulerKey_' + key);
 	},
 	setValue: function(key, value) {
 		var q = dojo.query('meta[name="' + key + '"]');
