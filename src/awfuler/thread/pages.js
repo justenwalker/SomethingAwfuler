@@ -25,9 +25,7 @@ dojo.mixin(awfuler.thread,
 			var ymax = window.scrollMaxY;
 			if( ( ymax - y ) < 50 ) { // 200px of the page left or less
 				var page = a.getPage();
-				GM_log('Loading Page : ' + page);
 				if( page < a.maxPages && !awfuler.thread.pages._pageLoading) {
-					GM_log('Loading Page : ' + page);
 					awfuler.thread.pages.loadPage(page+1,awfuler.thread.pages._appendPage);
 				}
 			}
@@ -37,10 +35,8 @@ dojo.mixin(awfuler.thread,
 		if( threadDiv )
 		{
 			awfuler.util.meta.setAwfulValue('pagenumber',awfuler.thread.pages._lastPage);
-			GM_log('Appending New Page');
 			var posts = dojo.query(threadDiv,'table.post');
 			dojo.forEach(posts,function(post) {
-				GM_log('New Post ' + post );
 				post.parentNode.removeChild( post );
 				awfuler.thread.info._threadDiv.appendChild(post);
 			});
@@ -57,13 +53,11 @@ dojo.mixin(awfuler.thread,
 		}
 		if( awfuler.thread.pages._pageLoading  ) return;
 		awfuler.thread.pages._pageLoading = true;
-		GM_log('Loading page ' + pagenumber + ' via xhr');
 		dojo.xhrGet({
 			url: href,
 			handleAs: 'text',
 			error: function() { awfuler.thread.pages._pageLoading = false; },
 			load: function(data) {
-				GM_log('Got HTML for ' + pagenumber);
 				awfuler.thread.pages._pageLoading = false;
 				var div = awfuler.thread.pages._parsePage(data);
 				if( div != null ) { 

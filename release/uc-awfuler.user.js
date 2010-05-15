@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           SomethingAwfuler
-// @version        1.0.0-dev
+// @version        1.0.0
 // @author         Justen Walker (http://www.justenwalker.com)
 // @description    A collection of enhancements that aim to make the Something Awful forums more awful
 // @include        http://forums.somethingawful.com/*
@@ -310,7 +310,7 @@ dojo.global = {
 	}
 =====*/
 	dojo.version = {
-		major: 1, minor: 0, patch: 0, flag: "-dev",
+		major: 1, minor: 0, patch: 0, flag: "",
 		revision: rev ? +rev[0] : NaN,
 		toString: function(){
 			with(d.version){
@@ -12155,9 +12155,6 @@ banlookup: {
 
 		a._bans[userid].reason = reason;
 
-		GM_log('Banned Post: ' + postUrl);
-		GM_log('Ban Reason : ' + reason);
-
 	} //loadBan
 }//banlookup
 }//post
@@ -12246,13 +12243,11 @@ dojo.mixin(awfuler.thread,
 		}
 		if( awfuler.thread.pages._pageLoading  ) return;
 		awfuler.thread.pages._pageLoading = true;
-		GM_log('Loading page ' + pagenumber + ' via xhr');
 		dojo.xhrGet({
 			url: href,
 			handleAs: 'text',
 			error: function() { awfuler.thread.pages._pageLoading = false; },
 			load: function(data) {
-				GM_log('Got HTML for ' + pagenumber);
 				awfuler.thread.pages._pageLoading = false;
 				var div = awfuler.thread.pages._parsePage(data);
 				if( div != null ) { 

@@ -4,7 +4,7 @@
 ## SETTINGS ##
 ##############
 BUILD_PROFILE="awfuler"        ## Namespace
-VERSION=1.0.0-dev	       ## Version
+VERSION=1.0.0		       ## Version
 LANGUAGE=en                    ## Language
 LOGGING_ENABLED="Y"            ## Enabled logfiles: Y/N
 LOG_DIR="logs"                 ## Logfile Directory

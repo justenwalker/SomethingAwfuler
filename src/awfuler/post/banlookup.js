@@ -133,9 +133,6 @@ banlookup: {
 
 		a._bans[userid].reason = reason;
 
-		GM_log('Banned Post: ' + postUrl);
-		GM_log('Ban Reason : ' + reason);
-
 	} //loadBan
 }//banlookup
 }//post
