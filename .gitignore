@@ -1,4 +1,3 @@
-
 #ignore logs
 logs/*
 #ignore vim/backup files
@@ -29,6 +28,9 @@ Thumbs.db
 *.lib
 *.sbr
 obj/
-[Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+
+# Dont ignore release scripts
+!awfuler.user.js
+!uc-awfuler.user.js
