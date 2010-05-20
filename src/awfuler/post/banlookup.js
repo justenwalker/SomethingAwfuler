@@ -59,7 +59,7 @@ banlookup: {
 		},false);
 		dojo.style(button.link,{
 			"textDecoration":'none',
-			"backgroundImage": "url('" + awfuler.resources.button_gradient + "')",
+			"backgroundImage": "url('" + awfuler.resources.gray_gradient_20px + "')",
 			"backgroundRepeat": 'repeat-x',
 			"display":'block',
 			"height": '20px',
@@ -68,10 +68,10 @@ banlookup: {
 		});
 
 		//Image Setup
-		button.img.src = awfuler.resources.banpost_icon;
+		button.img.src = awfuler.resources.bomb;
 		dojo.style(button.img,{
 			"border"       : '0px none',
-			"width"        : '14px',
+			"width"        : '16px',
 			"height"       : '16px',
 			"padding"      : '1px'
 		});
