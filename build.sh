@@ -72,6 +72,9 @@ error () {
 init_logfile
 log "$PROG Build started with parameters: $*"
 
+## Build resources.js
+./make_resources.sh | tee -a ${LOG}
+
 ## STEP 2 - Setup Release Directory
 if [ -d "${RELEASE_DIR}" ]; then
 	log "Removing old release directory ${RELEASE_DIR}"
