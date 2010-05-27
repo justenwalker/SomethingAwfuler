@@ -52,6 +52,31 @@ init_logfile () {
 		fi
 	fi
 }
+
+build_dojo () {
+case `uname` in
+	CYGWIN*)
+		PROFILE_FILE="`cygpath -wa ${PROFILE_PATH}`"
+		CLASSPATH=../shrinksafe/js.jar\;../shrinksafe/shrinksafe.jar
+		#CLASSPATH="$(cygpath -w ../shrinksafe/js.jar)\\;$(cygpath -w ../shrinksafe/shrinksafe.jar)"
+	;;
+	*)
+		PROFILE_FILE="${PROFILE_PATH}"
+		CLASSPATH=../shrinksafe/js.jar:../shrinksafe/shrinksafe.jar
+	;;
+esac
+	cd "${DOJO_UTIL}/buildscripts"
+	java \
+	-classpath "${CLASSPATH}" \
+	org.mozilla.javascript.tools.shell.Main \
+	build.js \
+		profileFile=${PROFILE_FILE} \
+		action=clean,release \
+		optimize=shrinkSafe \
+		version=${VERSION}
+	return $?
+}
+
 log () {
 	if [ "${LOGGING_ENABLED}" = "Y" ]; then
 		echo "[ `date` ] $1" | tee -a ${LOG}
@@ -64,39 +89,36 @@ error () {
 	exit 1
 }
 
-##############################################################################
-# # # # # # # # # # # # # # # MAIN PROGRAM # # # # # # # # # # # # # # # # # #
-############################################################################## 
+build () {
+	## STEP 1 - Initialize Logs
+	init_logfile
+	log "$PROG Build started with parameters: $*"
 
-## STEP 1 - Initialize Logs
-init_logfile
-log "$PROG Build started with parameters: $*"
+	## Build resources.js
+	./make_resources.sh | tee -a ${LOG}
 
-## Build resources.js
-./make_resources.sh | tee -a ${LOG}
+	## STEP 2 - Setup Release Directory
+	if [ -d "${RELEASE_DIR}" ]; then
+		log "Removing old release directory ${RELEASE_DIR}"
+		rm -Rf "${RELEASE_DIR}"
+	fi	
+	mkdir "${RELEASE_DIR}"
 
-## STEP 2 - Setup Release Directory
-if [ -d "${RELEASE_DIR}" ]; then
-	log "Removing old release directory ${RELEASE_DIR}"
-	rm -Rf "${RELEASE_DIR}"
-fi
-mkdir "${RELEASE_DIR}"
+	log "Removing temp files ending in ~"
+	find "${PWD}" -iname '*~' -exec rm {} \;
 
-log "Removing temp files ending in ~"
-find . -name '*~' -exec rm {} \;
+	## STEP 3 - Gather Dependencies
+	log "Gathering dependencies..."
+	echo 'dojo.provide("includes.js");' > "${INCLUDES_JS_PATH}"
+	find "${SRC_DIR}" -name '*.js' -exec grep '^\s*dojo.require\s*([^;]*;' {} \; | sed -e 's/^\s*//' -e 's/;.*$//' | sort | uniq | tee -a "${INCLUDES_JS_PATH}" | $TEE_LOGS
+	DEPS=`cat "${INCLUDES_JS_PATH}" | wc -l`
+	DEPS=$(( $DEPS - 1 ))
+	log "Found ${DEPS} dependencies"
 
-## STEP 3 - Gather Dependencies
-log "Gathering dependencies..."
-echo 'dojo.provide("includes.js");' > "${INCLUDES_JS_PATH}"
-find "${SRC_DIR}" -name '*.js' -exec grep '^\s*dojo.require\s*([^;]*;' {} \; | sed -e 's/^\s*//' -e 's/;.*$//' | sort | uniq | tee -a "${INCLUDES_JS_PATH}" | $TEE_LOGS
-DEPS=`cat "${INCLUDES_JS_PATH}" | wc -l`
-DEPS=$(( $DEPS - 1 ))
-log "Found ${DEPS} dependencies"
-
-## STEP 4 - Build Profile
-PROFILE_PATH=${PROFILE_DIR}/${BUILD_PROFILE}.profile.js
-log "Creating Profile ${PROFILE_PATH}"
-cat <<EOF > "${PROFILE_PATH}"
+	## STEP 4 - Build Profile
+	PROFILE_PATH=${PROFILE_DIR}/${BUILD_PROFILE}.profile.js
+	log "Creating Profile ${PROFILE_PATH}"
+	cat <<EOF > "${PROFILE_PATH}"
 dependencies = {
 	layers: [
 		{
@@ -115,69 +137,85 @@ dependencies = {
 }
 EOF
 
-## STEP 5 - Run Build Script
-log "Building Project ${BUILD_PROFILE}"
-cd "${BUILD_SCRIPT_DIR}"
-./build.sh profile=${BUILD_PROFILE} action=clean,release optimize=shrinkSafe version=${VERSION} | ${TEE_LOGS}
-if [ $? -eq 0 ]; then
-	log "Build completed successfully"
-else
-	error "Build script exited with an unexpected error"
-fi
-
-## STEP 5 - Package Release
-cd "${THISDIR}"
-log "Copying Dojo files"
-DOJO_SOURCE="${DOJO}/release/dojo/dojo/dojo.js"
-if [ ! -f "${DOJO_SOURCE}" ]; then
-	error "Can't find Dojo Source ${DOJO_SOURCE}"
-fi
-cp "${DOJO_SOURCE}" "${RELEASE_DIR}/dojo.js"
-cp "${DOJO_SOURCE}.uncompressed.js" "${RELEASE_DIR}/dojo-uc.js"
-
-log "Copying ${BUILD_PROFILE} files"
-SRC=${DOJO}/src/${BUILD_PROFILE}/${BUILD_PROFILE}.js
-if [ ! -f "${SRC}" ]; then
-	error "Could not find output source file ${SRC}"
-fi
-cp "${SRC}" "${RELEASE_DIR}/source.js"
-cp "${SRC}.uncompressed.js" "${RELEASE_DIR}/source-uc.js"
-if [ -d ${DOJO}/src/nls ]; then
-	LANG=${DOJO}/src/nls/${BUILD_PROFILE}_${LANGUAGE}.js
-	if [ ! -f "${LANG}" ]; then
-		error "Could not find output language file ${LANG}"
+	## STEP 5 - Run Build Script
+	log "Building Project ${BUILD_PROFILE}"
+	build_dojo
+	if [ $? -eq 0 ]; then
+		log "Build completed successfully"
+	else
+		error "Build script exited with an unexpected error"
 	fi
-	log "Using ${LANG} language file"
-else
-	log "No languages found"
-	LANG="${DOJO}/src/_lang.js"
-	echo "" > "${LANG}"
-fi
-cp "${LANG}" "${RELEASE_DIR}/lang.js"
 
-## STEP 6 - Assemble Source Files
+	## STEP 5 - Package Release
+	cd "${THISDIR}"
+	log "Copying Dojo files"
+	DOJO_SOURCE="${DOJO}/release/dojo/dojo/dojo.js"
+	if [ ! -f "${DOJO_SOURCE}" ]; then
+		error "Can't find Dojo Source ${DOJO_SOURCE}"
+	fi
+	cp "${DOJO_SOURCE}" "${RELEASE_DIR}/dojo.js"
+	cp "${DOJO_SOURCE}.uncompressed.js" "${RELEASE_DIR}/dojo-uc.js"
 
-log "Assembling Source Files"
+	log "Copying ${BUILD_PROFILE} files"
+	SRC=${DOJO}/src/${BUILD_PROFILE}/${BUILD_PROFILE}.js
+	if [ ! -f "${SRC}" ]; then
+		error "Could not find output source file ${SRC}"
+	fi
+	cp "${SRC}" "${RELEASE_DIR}/source.js"
+	cp "${SRC}.uncompressed.js" "${RELEASE_DIR}/source-uc.js"
+	if [ -d ${DOJO}/src/nls ]; then
+		LANG=${DOJO}/src/nls/${BUILD_PROFILE}_${LANGUAGE}.js
+		if [ ! -f "${LANG}" ]; then
+			error "Could not find output language file ${LANG}"
+		fi
+		log "Using ${LANG} language file"
+	else
+		log "No languages found"
+		LANG="${DOJO}/src/_lang.js"
+		echo "" > "${LANG}"
+	fi
+	cp "${LANG}" "${RELEASE_DIR}/lang.js"
+	
+	## STEP 6 - Assemble Source Files
+	
+	log "Assembling Source Files"
+	
+	cd "${THISDIR}/${RELEASE_DIR}"
+	REL_FILE="${BUILD_PROFILE}.user.js"
+	
+	# Get Properties, replace version number
+	cat "${THISDIR}/userscript.props.js" | sed "s/#VERSION#/${VERSION}/g" > props.js
+	
+	
+	cat props.js lang.js dojo.js source.js > "${REL_FILE}"
+	log "Compressed Script Created"
+	
+	
+	cat props.js lang.js dojo-uc.js source-uc.js > "uc-${REL_FILE}"
+	log "Uncompressed Script Created"
+	
+	## STEP 7 - Clean Up
+	log "Cleaning Up"
+	rm props.js lang.js source.js source-uc.js dojo.js dojo-uc.js
+	
+	cd "${THISDIR}"
+	rm -Rf "${INCLUDES_JS_PATH}"
+	
+	log "Release completed! `ls ${RELEASE_DIR}`"
+}
 
-cd "${THISDIR}/${RELEASE_DIR}"
-REL_FILE="${BUILD_PROFILE}.user.js"
+clean () {
+	rm -Rf ${THISDIR}/logs
+	rm -Rf ${THISDIR}/release
+}
 
-# Get Properties, replace version number
-cat "${THISDIR}/userscript.props.js" | sed "s/#VERSION#/${VERSION}/g" > props.js
+##############################################################################
+# # # # # # # # # # # # # # # MAIN PROGRAM # # # # # # # # # # # # # # # # # #
+############################################################################## 
+
+case $1 in
+	clean) clean ;;
+	*)	build	;;
+esac
 
 
-cat props.js lang.js dojo.js source.js > "${REL_FILE}"
-log "Compressed Script Created"
-
-
-cat props.js lang.js dojo-uc.js source-uc.js > "uc-${REL_FILE}"
-log "Uncompressed Script Created"
-
-## STEP 7 - Clean Up
-log "Cleaning Up"
-rm props.js lang.js source.js source-uc.js dojo.js dojo-uc.js
-
-cd "${THISDIR}"
-rm -Rf "${INCLUDES_JS_PATH}"
-
-log "Release completed! `ls ${RELEASE_DIR}`"
