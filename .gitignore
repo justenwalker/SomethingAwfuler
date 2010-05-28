@@ -3,6 +3,8 @@ logs/*
 #ignore vim/backup files
 *.swp
 *~
+# Don't save eclipse metadata
+.metadata
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files build by Visual Studio
@@ -31,6 +33,10 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 
-# Dont ignore release scripts
+# Don't ignore release scripts
 !awfuler.user.js
 !uc-awfuler.user.js
+
+# Don't ignore git files
+!.gitignore
+!.gitmodules

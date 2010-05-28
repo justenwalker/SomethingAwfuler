@@ -1,6 +1,6 @@
 #! /bin/sh
 
-GMRESGEN_JAR=lib/gmresgen/gmresgen.jar
+GMRESGEN_JAR=../GmResourceGenerator/gmresgen.jar
 RESOURCES_JS=src/awfuler/resources.js
 
 if [ ! -f ${GMRESGEN_JAR} ]; then
