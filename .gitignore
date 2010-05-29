@@ -1,5 +1,5 @@
 #ignore logs
-logs/*
+SomethingAwfuler/logs/*
 #ignore vim/backup files
 *.swp
 *~

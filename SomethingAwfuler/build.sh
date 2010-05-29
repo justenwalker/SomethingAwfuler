@@ -21,6 +21,7 @@ UTIL2SRC_RELPATH="../../../${SRC_DIR}"
 ###########
 ## Setup ##
 ###########
+ROOTDIR=`dirname $0`; cd "${ROOTDIR}"; ROOTDIR=`pwd`
 TEE_LOGS=cat
 THISDIR=`pwd`
 PROG=`basename $0`
@@ -32,6 +33,15 @@ PROFILE_DIR="${BUILD_SCRIPT_DIR}/profiles"
 INCLUDES_DOJO_NAME="includes"
 INCLUDES_JS_NAME="${INCLUDES_DOJO_NAME}.js"
 INCLUDES_JS_PATH="${SRC_DIR}/${INCLUDES_JS_NAME}"
+case `uname` in
+	CYGWIN*)
+		COPYRIGHT=$(cygpath -wa ${ROOTDIR}/LICENSE.txt | sed 's/\\/\\\\/g' )
+	;;
+	*)
+		COPYRIGHT="${ROOTDIR}/LICENSE.txt"
+	;;
+esac
+
 ###############
 ## FUNCTIONS ##
 ###############
@@ -124,6 +134,7 @@ dependencies = {
 		{
 			name: "${UTIL2SRC_RELPATH}/${BUILD_PROFILE}.js",
 			resourceName: "${BUILD_PROFILE}",
+			copyrightFile: "${COPYRIGHT}",
 			dependencies: [
 				"${BUILD_PROFILE}.${INCLUDES_DOJO_NAME}"
 			]
