@@ -11,6 +11,17 @@ dojo.mixin(awfuler.thread,
 	_pageLoading: false,
 	_parsePage: function(data) {
 		var doc = awfuler.util.getDom(data);
+		
+		/**
+		 * This section fixes thumbnail images
+		 */
+		// ---------------------------------------
+		var timgs = dojo.query('.timg',doc.contentDocument.documentElement);
+		dojo.map(timgs,function(item){
+			dojo.style(item,'visibility','visible');
+		});
+		// ---------------------------------------
+		
 		var thread = dojo.query("#thread",doc.contentDocument.documentElement);
 		if( thread[0] ) {
 			return thread[0];
