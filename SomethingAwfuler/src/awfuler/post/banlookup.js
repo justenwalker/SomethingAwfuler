@@ -68,7 +68,7 @@ banlookup: {
 		});
 
 		//Image Setup
-		button.img.src = awfuler.resources.bomb;
+		button.img.src = awfuler.resources.warn;
 		dojo.style(button.img,{
 			"border"       : '0px none',
 			"width"        : '16px',
