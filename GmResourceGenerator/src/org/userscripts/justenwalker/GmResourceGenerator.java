@@ -19,37 +19,67 @@
 package org.userscripts.justenwalker;
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-
+import org.json.*;
 import org.apache.commons.codec.binary.Base64;
 
 public class GmResourceGenerator {
 	public static void main(String[] args) {
-		if( args.length != 1 ) {
-			System.err.println("Please provide a file to convert to base64");
+		if( args.length < 2 ) {
+			System.err.println("Insufficient number of arguments");
+			System.exit(1);
 			return;
 		}
-		String filename = args[0];
+		String dirname = args[0];
+		String attribute = args[1];
+				
+		File dir = new File(dirname);
+		FileFilter fileFilter = new FileFilter() {
+			public boolean accept(File file) {
+				return file.isFile();
+			}
+		};
+		File[] files = dir.listFiles(fileFilter);
+		if (!dir.isDirectory() || files == null || files.length == 0 ) {
+			System.err.println("No files in this directory");
+			System.exit(1);
+			return;
+		}
+		
 		try {
-			File f = new File(filename);
-			
-			// Get File's MIME Type
-			String mime = new MimetypesFileTypeMap().getContentType(f);
-			
-			// Create URL-Safe Base64 Encoded Link
-			byte[] fileBytes = readFileBytes(f);
-			String b64 = URLEncoder.encode(Base64.encodeBase64String(fileBytes),"utf-8");
-			System.out.print("data:" + mime + ";base64," + b64);
-			
-		} catch (IOException e) {
-			System.err.println("Could not read file " + filename);
-			System.err.println(e.toString());
+			JSONObject obj = new JSONObject();
+			JSONObject resources = new JSONObject();
+			for( int i = 0; i<files.length; ++i)
+			{
+				File f = files[i];
+				String key = f.getName();
+				resources.put(key, fileToDataUrl(f));	
+			}
+			obj.put(attribute, resources);
+			System.out.print(obj.toString());
+		} catch (JSONException ex) {
+			System.err.println("Exception while adding resource to the json object: " + ex);
 		}
 	}
-	
+	public static String fileToDataUrl(File file) {
+		try {
+			// Get File's MIME Type
+			String mime = new MimetypesFileTypeMap().getContentType(file);
+			
+			// Create URL-Safe Base64 Encoded Link
+			byte[] fileBytes = readFileBytes(file);
+			String b64 = URLEncoder.encode(Base64.encodeBase64String(fileBytes),"utf-8");
+			return ("data:" + mime + ";base64," + b64);
+		} catch (IOException e) {
+			System.err.println("Could not read file " + file.getName());
+			System.err.println(e.toString());
+		}
+		return "";
+	}
 	public static byte[] readFileBytes(File file) throws IOException {
 		InputStream inStream = new FileInputStream(file);
 		long fileLen = file.length();

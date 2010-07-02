@@ -19,33 +19,17 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi 
 
-get_url() {
-	java -jar ${GMRESGEN_JAR} "$1"
+get_json() {
+	java -jar ${GMRESGEN_JAR} "$1" "$2"
 }
 
 echo "Building ${RESOURCES_JS}"
 
-cat <<EOF > ${RESOURCES_JS}
-dojo.provide("awfuler.resources");
-dojo.mixin(awfuler,
-{
-	resources: {
-EOF
+echo "dojo.provide("awfuler.resources");" > ${RESOURCES_JS}
+echo "dojo.mixin(awfuler," >> ${RESOURCES_JS}
 
-for RES in `find resources`
-do
-	if [ -f ${RES} ]; then
-		URL=`get_url "$RES"`
-		FILENAME=`basename $RES | sed -e 's/[.][^.]\+$//' -e 's/ /_/g'`
-		echo "\"${FILENAME}\": '${URL}'," | sed 's/^/\t\t/' >> ${RESOURCES_JS}
-		echo "$RES Done."
-	fi	
-done
+echo `get_json "resources" "resources"` >> ${RESOURCES_JS}
 
-cat <<EOF >> ${RESOURCES_JS}
-		_:0
-	}
-});
-EOF
+echo ");" >> ${RESOURCES_JS}
 
 echo "Done Building ${RESOURCES_JS}!"
