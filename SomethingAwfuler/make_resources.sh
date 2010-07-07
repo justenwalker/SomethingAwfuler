@@ -25,7 +25,7 @@ get_json() {
 
 echo "Building ${RESOURCES_JS}"
 
-echo "dojo.provide("awfuler.resources");" > ${RESOURCES_JS}
+echo "dojo.provide(\"awfuler.resources\");" > ${RESOURCES_JS}
 echo "dojo.mixin(awfuler," >> ${RESOURCES_JS}
 
 echo `get_json "resources" "resources"` >> ${RESOURCES_JS}
