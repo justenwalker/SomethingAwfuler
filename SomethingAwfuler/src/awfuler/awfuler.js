@@ -15,3 +15,4 @@ dojo.require('awfuler.user');
 dojo.require('awfuler.thread');
 dojo.require('awfuler.post');
 dojo.require('awfuler.css');
+dojo.require('awfuler.widgets');
