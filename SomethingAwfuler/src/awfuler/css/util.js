@@ -41,7 +41,19 @@ dojo.mixin(awfuler.css,{
 			"style": style
 		}];
 	},
-	addCss: function(id,selector,style) {
+	_addCss2: function(id,array) {
+		if( array.length % 2 == 0 ) {
+			for( var i = 0; i < array.length; i += 2) {
+				var selector = array[i];
+				var style = array[i+1];
+				awfuler.css._addCss3(id,selector,style);
+			}
+		}
+	},
+	_addCss3: function(
+			/*String*/ id,
+			/*String|Array*/ selector,
+			/*String?*/ style) {
 		var s = awfuler.css._style;
 		if( s[id] ) {
 			s[id].push({
@@ -50,6 +62,18 @@ dojo.mixin(awfuler.css,{
 			});
 		} else {
 			awfuler.css.setCss(id,selector,style);
+		}
+	},
+	addCss: function(
+			/*String*/ id,
+			/*String|Array*/ selector,
+			/*String?*/ style) {
+		var args = arguments.length;
+		if( args == 2 ) {
+			awfuler.css._addCss2(id,selector);
+		}
+		if( args == 3 ) {
+			awfuler.css._addCss3(id,selector,style);
 		}
 	},
 	removeCss: function(id) {
