@@ -33,7 +33,7 @@ banlookup: {
 	 * Returns the UserID of the banlink node
 	 */
 	_insertButton: function(banlink) {
-		GM_log('Insert button for ' + banlink.href);
+		//GM_log('Insert button for ' + banlink.href);
 		var a = awfuler.post.banlookup;
 		var userid = (banlink.href.match(/userid=([0-9]*)/i))[1];
 		var button = {
@@ -83,7 +83,7 @@ banlookup: {
 		return userid;
 	},//_insertButton
 	loadBans: function() {
-		GM_log('Loading Bans');
+		//GM_log('Loading Bans');
 		var a = awfuler.post.banlookup;
 		if( a._bans == null ) {
 			a._bans = new Array();
@@ -93,7 +93,7 @@ banlookup: {
 			if( dojo.hasClass(item,a.cbanmark) ) return; // Skip it, its already done
 			var userid = a._insertButton(item);
 			if( !(userid in a._bans) ) {
-				GM_log('New banned user found ' + userid);
+				//GM_log('New banned user found ' + userid);
 				a._bans[userid] = {
 					postUrl: null,
 					reason: null
@@ -111,7 +111,7 @@ banlookup: {
 	}, //loadBans
 	loadBan: function(data,userid) {
 		
-		GM_log('Got ban data for: ' + userid);
+		//GM_log('Got ban data for: ' + userid);
 
 		var a = awfuler.post.banlookup;
 		var dom = awfuler.util.getDom(data);
