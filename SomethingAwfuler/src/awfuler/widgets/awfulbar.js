@@ -1,18 +1,36 @@
 dojo.provide('awfuler.widgets.awfulbar');
+dojo.require("dijit.Menu");
+dojo.require("dijit.MenuItem");
+dojo.require("dijit._Templated");
+dojo.require("dijit._HasDropDown");
 dojo.require("dijit._Widget");
 dojo.require("dijit.form._FormWidget");
-dojo.require("dijit._Templated");
 
-dojo.declare("awfuler.widgets.awfulbarTab", [dijit.form._FormWidget],
+dojo.declare("awfuler.widgets.awfulbarTab", [dijit.form._FormWidget,dijit._HasDropDown],
 {
 	attributeMap: {
 		image: {node: "imgNode", type:"src"},
 		label: {node: "labelNode",type:"innerHTML"}
 	},
+	menu: null,
+	dropDownPosition: ["above"],
 	templatePath    : dojo.moduleUrl('awfuler.widgets', 'templates/awfulbarTab.html'),
 	postCreate: function()
 	{
-		
+		this.menu = new dijit.Menu({leftClickToOpen: true});
+		this.menu.bindDomNode(this.domNode);
+	},
+	addItem: function(/*String*/name,/*String*/href) {
+		if( this.menu )
+		{
+			this.menu.addChild(new dijit.MenuItem({
+				label: name,
+				_blankGif: awfuler.resources['blank.gif'],
+				onClick: function() {
+					window.location = href;
+				}
+			}));
+		}
 	},
 	_onButtonClick: function(/*Event*/ e){
 		return this.onClick(e);
@@ -51,5 +69,22 @@ dojo.declare("awfuler.widgets.awfulbar", [dijit._Widget, dijit._Templated],
 
 dojo.addOnLoad(function(){
 	awfuler.awfulbar = new awfuler.widgets.awfulbar();
-	//TODO: Add Tabs
+	
+	/* Create Navigation Menu */
+	var navContainer = dojo.query('#navigation');
+	if( navContainer.length > 0 ) {
+		var links = dojo.query("a",navContainer[0]);
+		if( links.length > 0 ) {
+			var tabs = awfuler.awfulbar.addTabs({label:'Navigation'});
+			var tab = tabs[0];
+			links.forEach(function(node,idx,arr){
+				tab.addItem(node.innerHTML,node.href);
+			});
+		}	
+	}
+	dojo.destroy(navContainer[0]);
+	var globalMenu = dojo.query('#globalmenu');
+	dojo.destroy(globalMenu[0]);
+	
+	//TODO: Add Tabs to Awfulbar
 });
