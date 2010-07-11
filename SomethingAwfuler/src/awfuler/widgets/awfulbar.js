@@ -1,4 +1,7 @@
 dojo.provide('awfuler.widgets.awfulbar');
+dojo.require('awfuler.css.dijit_css');
+dojo.require('awfuler.css.Menu_css');
+dojo.require('awfuler.css.awfulbar_css');
 dojo.require("dijit.Menu");
 dojo.require("dijit.MenuItem");
 dojo.require("dijit._Templated");
