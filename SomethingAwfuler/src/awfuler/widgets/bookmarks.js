@@ -36,18 +36,20 @@ dojo.declare("awfuler.widgets.bookmarks", [dijit._Widget,dijit._Templated],
 			myself.updateBookmarks();
 			myself.onRefresh();
 			if( myself.hasUpdates ) {
-				// Reset if updates are found
-				myself.timeout = 10000;
+				// Stop rechecking if updates are found
+				myself.timeout = 0;
 			} else {
 				// Exponential Start
 				if( myself.timeout < 300000 ) {
-					myself.timeout *= 2;
+					myself.timeout = 2*myself.timeout;
 				} else {
 					// Linear Continuation
-					myself.timeout += 10000;
+					myself.timeout = 10000+myself.timeout;
 				}
 			}
-			window.setTimeout(myself.refresh,myself.timeout);
+			if( myself.timeout > 0 ) {
+				window.setTimeout(function() { myself.refresh(); },myself.timeout);
+			}
 		});
 	},
 	// EXTENSION POINT //
@@ -61,6 +63,7 @@ dojo.declare("awfuler.widgets.bookmarks", [dijit._Widget,dijit._Templated],
 		
 		// -- Remove old bookmarks -- //
 		for( var i = 0; i < this.widgets.length; ++i ) {
+			dojo.destroy(this.widgets[i].domNode);
 			this.widgets[i].destroyRecursive();
 		}
 		this.widgets = [];
