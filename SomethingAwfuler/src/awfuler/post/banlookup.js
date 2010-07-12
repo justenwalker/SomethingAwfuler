@@ -132,6 +132,8 @@ banlookup: {
 		reason = reason.childNodes[0].textContent;
 
 		a._bans[userid].reason = reason;
+		
+		dojo.destroy(dom);
 
 	} //loadBan
 }//banlookup
