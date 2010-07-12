@@ -81,7 +81,7 @@ dojo.mixin(awfuler.user,
 							thread['newpost'] = count.href;
 							thread['unread'] = count.children[0].innerHTML;
 						} else {
-							thread['newpost'] = '/showthread.php?goto=newpost&threadid=' + thread.id;
+							thread['newpost'] = '/showthread.php?goto=lastpost&threadid=' + thread.id;
 							thread['unread'] = 0;
 						}
 					}
