@@ -44,7 +44,6 @@ dojo.declare("awfuler.widgets.awfulbarTab", [dijit.form._FormWidget,dijit._HasDr
 		}
 		this.widget = contents;
 		contents.placeAt(this.domNode,'first');
-		this.closeWidget();
 	},
 	openWidget: function() {
 		if( this.widget ) {
