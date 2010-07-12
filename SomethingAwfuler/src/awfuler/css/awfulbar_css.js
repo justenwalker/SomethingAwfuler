@@ -12,7 +12,6 @@ var url = awfuler.css.getResourceUrl;
 	"position": 'fixed',
 	"bottom": '0px',
 	"left": '16px',
-	"width": '100%',
 	"z-index": "900"
 },
 '.awfulbar_l', {
