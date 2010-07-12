@@ -2,6 +2,20 @@ dojo.provide('awfuler.util.getDom');
 
 dojo.mixin(awfuler.util,
 {
+	getFirstElement: function(/*String*/queryText,/*domObject*/object) {
+		// summary:
+		// 		Queries the dom object using dojo.query, returns the first match
+		// returns:
+		// 		The first dom element found, or null if nothing matches
+		//
+		// queryText:
+		// 		dom query to use in dojo.query
+		// object:
+		// 		The root element to search with dojo.query	
+		var list = dojo.query(queryText,object);
+		if( list && list.length > 0 ) return list[0];
+		return null;
+	},
 	getDom: function(/*String*/responseText) {
 		// summary:
 		// 		Takes an HTML string and returns a <div> with the HTML elements
