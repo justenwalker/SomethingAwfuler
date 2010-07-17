@@ -13,8 +13,14 @@ dojo.require("dijit.form._FormWidget");
 dojo.declare("awfuler.widgets.awfulbarTab", [dijit.form._FormWidget,dijit._HasDropDown],
 {
 	attributeMap: {
-		image: {node: "imgNode", type:"src"},
 		label: {node: "labelNode",type:"innerHTML"}
+	},
+	_setImageAttr: function(value) {
+		if( value && value.length > 0 ) {
+			this.imgNode.src = value;
+		} else {
+			this.imgNode.src = '';
+		}
 	},
 	menu: null,
 	dropDownPosition: ["above"],
@@ -128,7 +134,7 @@ dojo.addOnLoad(function(){
 	var wbook = new awfuler.widgets.bookmarks({
 		onRefresh: function() {
 			if( this.hasUpdates ) {
-				bookmarks.openWidget();
+				bookmarks.attr('image',awfuler.resources['important.png']);
 			}
 		}
 	});

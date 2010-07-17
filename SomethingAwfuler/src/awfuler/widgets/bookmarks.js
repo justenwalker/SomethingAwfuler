@@ -36,8 +36,7 @@ dojo.declare("awfuler.widgets.bookmarks", [dijit._Widget,dijit._Templated],
 			myself.updateBookmarks();
 			myself.onRefresh();
 			if( myself.hasUpdates ) {
-				// Stop rechecking if updates are found
-				myself.timeout = 0;
+				myself.timeout = 10000+myself.timeout;
 			} else {
 				// Exponential Start
 				if( myself.timeout < 300000 ) {
