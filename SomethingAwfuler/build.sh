@@ -196,7 +196,7 @@ EOF
 	REL_FILE="${BUILD_PROFILE}.user.js"
 	
 	# Get Properties, replace version number
-	cat "${THISDIR}/userscript.props.js" | sed "s/#VERSION#/${VERSION}/g" | sed "s/#SCRIPTID#/${SCRIPTID}/g" | > props.js
+	cat "${THISDIR}/userscript.props.js" | sed "s/#VERSION#/${VERSION}/g" | sed "s/#SCRIPTID#/${SCRIPTID}/g" > props.js
 	
 	
 	cat props.js lang.js dojo.js source.js > "${REL_FILE}"
