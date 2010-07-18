@@ -7,4 +7,4 @@
 // @require        http://userscripts.org/scripts/source/57756.user.js
 // @license        GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // ==/UserScript==
-ScriptUpdater.check(#SCRIPTID#,#VERSION#)
+ScriptUpdater.check('#SCRIPTID#','#VERSION#');
