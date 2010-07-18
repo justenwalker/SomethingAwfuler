@@ -4,6 +4,7 @@
 ## SETTINGS ##
 ##############
 BUILD_PROFILE="awfuler"        ## Namespace
+SCRIPTID=81795                 ## Userscript ID
 VERSION=1.3.0                  ## Version
 LANGUAGE=en                    ## Language
 LOGGING_ENABLED="Y"            ## Enabled logfiles: Y/N
@@ -195,7 +196,7 @@ EOF
 	REL_FILE="${BUILD_PROFILE}.user.js"
 	
 	# Get Properties, replace version number
-	cat "${THISDIR}/userscript.props.js" | sed "s/#VERSION#/${VERSION}/g" > props.js
+	cat "${THISDIR}/userscript.props.js" | sed "s/#VERSION#/${VERSION}/g" | sed "s/#SCRIPTID#/${SCRIPTID}/g" | > props.js
 	
 	
 	cat props.js lang.js dojo.js source.js > "${REL_FILE}"
