@@ -5,7 +5,7 @@
 ##############
 BUILD_PROFILE="awfuler"        ## Namespace
 SCRIPTID=81795                 ## Userscript ID
-VERSION=1.3.0                  ## Version
+VERSION=1.3.1                  ## Version
 LANGUAGE=en                    ## Language
 LOGGING_ENABLED="Y"            ## Enabled logfiles: Y/N
 LOG_DIR="logs"                 ## Logfile Directory
