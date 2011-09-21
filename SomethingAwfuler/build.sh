@@ -10,7 +10,7 @@ LANGUAGE=en                    ## Language
 LOGGING_ENABLED="Y"            ## Enabled logfiles: Y/N
 LOG_DIR="logs"                 ## Logfile Directory
 RELEASE_DIR="release"          ## Release Directory
-DOJO="lib/dojo"                ## Root of the Dojo SDK
+DOJO="$PWD/lib/dojo"              ## Root of the Dojo SDK
 PROPS_FILE=userscript.props.js ## UserScript Properties
 
 
@@ -22,7 +22,6 @@ UTIL2SRC_RELPATH="../../../${SRC_DIR}"
 ###########
 ## Setup ##
 ###########
-ROOTDIR=`dirname $0`; cd "${ROOTDIR}"; ROOTDIR=`pwd`
 TEE_LOGS=cat
 THISDIR=`pwd`
 PROG=`basename $0`
@@ -36,10 +35,13 @@ INCLUDES_JS_NAME="${INCLUDES_DOJO_NAME}.js"
 INCLUDES_JS_PATH="${SRC_DIR}/${INCLUDES_JS_NAME}"
 case `uname` in
 	CYGWIN*)
-		COPYRIGHT=$(cygpath -wa ${ROOTDIR}/LICENSE.txt | sed 's/\\/\\\\/g' )
+		COPYRIGHT=$(cygpath -wa ${THISDIR}/LICENSE.txt | sed 's/\\/\\\\/g' )
+	;;
+	MINGW*)
+		COPYRIGHT=$( echo "${THISDIR}/LICENSE.txt" | sed -e 's/[\/]\([a-zA-Z]\)[\/]/\1:\//g' )
 	;;
 	*)
-		COPYRIGHT="${ROOTDIR}/LICENSE.txt"
+		COPYRIGHT="${THISDIR}/LICENSE.txt"
 	;;
 esac
 
